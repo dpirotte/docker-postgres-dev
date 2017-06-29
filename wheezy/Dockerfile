@@ -45,4 +45,4 @@ RUN for version in 9.4 9.5 9.6 ; do \
   >> /etc/postgresql/$version/main/postgresql.conf \
 ; done
 
-
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
