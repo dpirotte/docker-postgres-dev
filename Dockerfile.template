@@ -2,7 +2,7 @@ FROM debian:%%VERSION%%
 
 # PGDG repository
 RUN apt-get -yqq update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install wget ca-certificates lsb-release apt-utils
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install wget ca-certificates lsb-release apt-utils gnupg2
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get -yqq update

@@ -1,12 +1,13 @@
-VERSIONS = wheezy jessie stretch
+DEBIAN_VERSIONS = wheezy jessie stretch
 
-default: dockerfiles
-	for v in ${VERSIONS}; do \
-		docker build -t dpirotte/postgres-dev:$$v $$v/ ; \
-	done; \
+default: debian
 
-dockerfiles:
-	for v in ${VERSIONS}; do \
-		mkdir -p $$v; \
-		sed "s/%%VERSION%%/$$v/" Dockerfile.template > $$v/Dockerfile ;\
-	done; \
+dockerfiles: $(addprefix dockerfile-,$(DEBIAN_VERSIONS))
+
+dockerfile-%:
+	sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
+
+debian: $(addprefix debian-,$(DEBIAN_VERSIONS))
+
+debian-%:
+	docker build -t dpirotte/postgres-dev:$* $*
