@@ -1,33 +1,22 @@
-FROM debian:wheezy
+FROM dpirotte/fpm-cookery:wheezy
 
 # PGDG repository
-RUN apt-get -yqq update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install wget ca-certificates lsb-release apt-utils gnupg2
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+  lsb-release \
+&& rm -rf /var/lib/apt/lists/*
+
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-RUN apt-get -yqq update
 
 # Postgresql development dependencies and runtime dependencies for installcheck
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
   postgresql-9.2 \
   postgresql-9.3 \
   postgresql-9.4 \
   postgresql-9.5 \
   postgresql-9.6 \
   postgresql-server-dev-all \
-  ;
-
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install \
-  curl \
-  gcc \
-  git \
-  make \
-  ruby \
-  ruby-dev \
-  unzip \
-  ;
-
-RUN gem install fpm fpm-cookery --no-rdoc --no-ri
+&& rm -rf /var/lib/apt/lists/*
 
 # It is more convenient to run installcheck if `root` has a user on the database
 RUN for version in 9.2 9.3 9.4 9.5 9.6 ; do \
@@ -44,5 +33,3 @@ RUN for version in 9.4 9.5 9.6 ; do \
   "max_replication_slots = 5\n" \
   >> /etc/postgresql/$version/main/postgresql.conf \
 ; done
-
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*

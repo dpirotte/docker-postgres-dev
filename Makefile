@@ -1,15 +1,13 @@
-DEBIAN_VERSIONS = wheezy jessie stretch
-UBUNTU_VERSIONS = trusty xenial
+VERSIONS = wheezy jessie stretch trusty xenial
 
-default: debian
+default: build
 
-dockerfiles: $(addprefix dockerfile-,$(DEBIAN_VERSIONS))
+dockerfiles: $(addprefix dockerfile-,$(VERSIONS))
 
 dockerfile-%:
-	sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
+	mkdir -p $* && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
 
-debian: $(addprefix debian-,$(DEBIAN_VERSIONS))
-ubuntu: $(addprefix ubuntu-,$(UBUNTU_VERSIONS))
+build: $(addprefix build-,$(VERSIONS))
 
-ubuntu-% debian-%:
+build-%:
 	docker build -t dpirotte/postgres-dev:$* $*
