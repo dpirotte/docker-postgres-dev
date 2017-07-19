@@ -1,3 +1,5 @@
+# vi: ft=dockerfile
+
 FROM dpirotte/fpm-cookery:%%VERSION%%
 
 # PGDG repository
@@ -7,6 +9,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+  postgresql-common \
+&& rm -rf /var/lib/apt/lists/*
+
+RUN echo \
+  "create_main_cluster = false\n" \
+  "start_conf = 'manual'\n" \
+>> /etc/postgresql-common/createcluster.conf
 
 # Postgresql development dependencies and runtime dependencies for installcheck
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
@@ -20,6 +31,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 
 # It is more convenient to run installcheck if `root` has a user on the database
 RUN for version in 9.2 9.3 9.4 9.5 9.6 ; do \
+  pg_createcluster $version main && \
+  sed -ri "s/port = [0-9]+/port = 5432/" /etc/postgresql/$version/main/postgresql.conf && \
   pg_ctlcluster $version main start && \
   su postgres -c "createuser --cluster $version/main -d -r -s root" && \
   pg_ctlcluster $version main stop --force \
