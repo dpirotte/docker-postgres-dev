@@ -29,6 +29,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   postgresql-server-dev-all \
 && rm -rf /var/lib/apt/lists/*
 
+# Set en_US.UTF-8 as default encoding
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen en_US.UTF-8 && \
+    /usr/sbin/update-locale LANG=en_US.UTF-8
+
+ENV LC_ALL en_US.UTF-8
+
 # It is more convenient to run installcheck if `root` has a user on the database
 RUN for version in 9.2 9.3 9.4 9.5 9.6 ; do \
   pg_createcluster $version main && \
