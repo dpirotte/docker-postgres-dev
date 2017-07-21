@@ -55,6 +55,3 @@ RUN for version in 9.4 9.5 9.6 10; do \
   "max_replication_slots = 5\n" \
   >> /etc/postgresql/$version/main/postgresql.conf \
 ; done
-
-COPY docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["docker-entrypoint.sh"]

@@ -5,7 +5,7 @@ default: build
 dockerfiles: $(addprefix dockerfile-,$(VERSIONS))
 
 dockerfile-%:
-	mkdir -p $* && cp docker-entrypoint.sh $*/ && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
+	mkdir -p $* && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
 
 build: $(addprefix build-,$(VERSIONS))
 
