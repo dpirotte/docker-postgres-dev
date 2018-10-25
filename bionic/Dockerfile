@@ -1,6 +1,6 @@
 # vi: ft=dockerfile
 
-FROM dpirotte/fpm-cookery:wheezy
+FROM dpirotte/fpm-cookery:bionic
 
 # PGDG repository
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
@@ -8,7 +8,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
 && rm -rf /var/lib/apt/lists/*
 
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main 10" > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
   postgresql-common \
@@ -27,7 +27,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   postgresql-9.5 \
   postgresql-9.6 \
   postgresql-10 \
-  postgresql-server-dev-10 \
+  postgresql-11 \
   postgresql-server-dev-all \
 && rm -rf /var/lib/apt/lists/*
 
@@ -39,7 +39,7 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 ENV LC_ALL en_US.UTF-8
 
 # It is more convenient to run installcheck if `root` has a user on the database
-RUN for version in 9.2 9.3 9.4 9.5 9.6 10; do \
+RUN for version in 9.2 9.3 9.4 9.5 9.6 10 11; do \
   pg_createcluster $version main && \
   sed -ri "s/port = [0-9]+/port = 5432/" /etc/postgresql/$version/main/postgresql.conf && \
   pg_ctlcluster $version main start && \
@@ -48,7 +48,7 @@ RUN for version in 9.2 9.3 9.4 9.5 9.6 10; do \
 ; done
 
 # Enable logical decoding for 9.4+
-RUN for version in 9.4 9.5 9.6 10; do \
+RUN for version in 9.4 9.5 9.6 10 11; do \
   echo \
   "wal_level = logical\n" \
   "max_wal_senders = 5\n" \
