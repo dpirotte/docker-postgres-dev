@@ -6,9 +6,9 @@ file:
     group: postgres
     filetype: file
     contains:
-      - "wal_level = logical"
-      - "max_wal_senders = 5"
-      - "max_replication_slots = 5"
+    - wal_level = logical
+    - max_wal_senders = 5
+    - max_replication_slots = 5
   /etc/postgresql/9.5/main/postgresql.conf:
     exists: true
     mode: "0644"
@@ -16,9 +16,9 @@ file:
     group: postgres
     filetype: file
     contains:
-      - "wal_level = logical"
-      - "max_wal_senders = 5"
-      - "max_replication_slots = 5"
+    - wal_level = logical
+    - max_wal_senders = 5
+    - max_replication_slots = 5
   /etc/postgresql/9.6/main/postgresql.conf:
     exists: true
     mode: "0644"
@@ -26,9 +26,9 @@ file:
     group: postgres
     filetype: file
     contains:
-      - "wal_level = logical"
-      - "max_wal_senders = 5"
-      - "max_replication_slots = 5"
+    - wal_level = logical
+    - max_wal_senders = 5
+    - max_replication_slots = 5
   /etc/postgresql/10/main/postgresql.conf:
     exists: true
     mode: "0644"
@@ -36,9 +36,9 @@ file:
     group: postgres
     filetype: file
     contains:
-      - "wal_level = logical"
-      - "max_wal_senders = 5"
-      - "max_replication_slots = 5"
+    - wal_level = logical
+    - max_wal_senders = 5
+    - max_replication_slots = 5
   /etc/postgresql/11/main/postgresql.conf:
     exists: true
     mode: "0644"
@@ -46,9 +46,9 @@ file:
     group: postgres
     filetype: file
     contains:
-      - "wal_level = logical"
-      - "max_wal_senders = 5"
-      - "max_replication_slots = 5"
+    - wal_level = logical
+    - max_wal_senders = 5
+    - max_replication_slots = 5
 package:
   postgresql-server-dev-9.3:
     installed: true
@@ -66,60 +66,48 @@ command:
   pg_ctlcluster 9.3 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.3 main stop --force:
     exit-status: 0
     stdout:
-      - /^903/
+    - /^903/
+    stderr: []
+    timeout: 0
   pg_ctlcluster 9.4 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.4 main stop --force:
     exit-status: 0
     stdout:
-      - /^904/
+    - /^904/
+    stderr: []
+    timeout: 0
   pg_ctlcluster 9.5 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.5 main stop --force:
     exit-status: 0
     stdout:
-      - /^905/
+    - /^905/
+    stderr: []
+    timeout: 0
   pg_ctlcluster 9.6 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.6 main stop --force:
     exit-status: 0
     stdout:
-      - /^906/
+    - /^906/
+    stderr: []
+    timeout: 0
   pg_ctlcluster 10 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 10 main stop --force:
     exit-status: 0
     stdout:
-      - /^10/
+    - /^10/
+    stderr: []
+    timeout: 0
   pg_ctlcluster 11 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 11 main stop --force:
     exit-status: 0
     stdout:
-      - /^11/
-  pg_lsclusters -h 9.3:
+    - /^11/
+    stderr: []
+    timeout: 0
+  pg_lsclusters -h:
     exit-status: 0
     stdout:
+    - 9.2 main 5432 down postgres /var/lib/postgresql/9.2/main /var/log/postgresql/postgresql-9.2-main.log
     - 9.3 main 5432 down postgres /var/lib/postgresql/9.3/main /var/log/postgresql/postgresql-9.3-main.log
-    stderr: []
-    timeout: 0
-  pg_lsclusters -h 9.4:
-    exit-status: 0
-    stdout:
     - 9.4 main 5432 down postgres /var/lib/postgresql/9.4/main /var/log/postgresql/postgresql-9.4-main.log
-    stderr: []
-    timeout: 0
-  pg_lsclusters -h 9.5:
-    exit-status: 0
-    stdout:
     - 9.5 main 5432 down postgres /var/lib/postgresql/9.5/main /var/log/postgresql/postgresql-9.5-main.log
-    stderr: []
-    timeout: 0
-  pg_lsclusters -h 9.6:
-    exit-status: 0
-    stdout:
     - 9.6 main 5432 down postgres /var/lib/postgresql/9.6/main /var/log/postgresql/postgresql-9.6-main.log
+    - 10  main 5432 down postgres /var/lib/postgresql/10/main  /var/log/postgresql/postgresql-10-main.log
+    - 11  main 5432 down postgres /var/lib/postgresql/11/main  /var/log/postgresql/postgresql-11-main.log
     stderr: []
-    timeout: 0
-  pg_lsclusters -h 10:
-    exit-status: 0
-    stdout:
-    - 10 main 5432 down postgres /var/lib/postgresql/10/main /var/log/postgresql/postgresql-10-main.log
-    stderr: []
-    timeout: 0
-  pg_lsclusters -h 11:
-    exit-status: 0
-    stdout:
-    - 11 main 5432 down postgres /var/lib/postgresql/11/main /var/log/postgresql/postgresql-11-main.log
-    stderr: []
-    timeout: 0
+    timeout: 10000
