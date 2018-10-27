@@ -1,113 +1,37 @@
 file:
-  /etc/postgresql/9.4/main/postgresql.conf:
+{{ range .Vars.pg_versions }}
+  /etc/postgresql/{{.}}/main/postgresql.conf:
     exists: true
     mode: "0644"
     owner: postgres
     group: postgres
     filetype: file
+    {{ if ne (printf "%v" .) "9.3" }}
     contains:
     - wal_level = logical
     - max_wal_senders = 5
     - max_replication_slots = 5
-  /etc/postgresql/9.5/main/postgresql.conf:
-    exists: true
-    mode: "0644"
-    owner: postgres
-    group: postgres
-    filetype: file
-    contains:
-    - wal_level = logical
-    - max_wal_senders = 5
-    - max_replication_slots = 5
-  /etc/postgresql/9.6/main/postgresql.conf:
-    exists: true
-    mode: "0644"
-    owner: postgres
-    group: postgres
-    filetype: file
-    contains:
-    - wal_level = logical
-    - max_wal_senders = 5
-    - max_replication_slots = 5
-  /etc/postgresql/10/main/postgresql.conf:
-    exists: true
-    mode: "0644"
-    owner: postgres
-    group: postgres
-    filetype: file
-    contains:
-    - wal_level = logical
-    - max_wal_senders = 5
-    - max_replication_slots = 5
-  /etc/postgresql/11/main/postgresql.conf:
-    exists: true
-    mode: "0644"
-    owner: postgres
-    group: postgres
-    filetype: file
-    contains:
-    - wal_level = logical
-    - max_wal_senders = 5
-    - max_replication_slots = 5
+    {{ end }}
+{{ end }}
 package:
-  postgresql-server-dev-9.3:
+{{ range .Vars.pg_versions }}
+  postgresql-{{.}}:
     installed: true
-  postgresql-server-dev-9.4:
+  postgresql-server-dev-{{.}}:
     installed: true
-  postgresql-server-dev-9.5:
-    installed: true
-  postgresql-server-dev-9.6:
-    installed: true
-  postgresql-server-dev-10:
-    installed: true
-  postgresql-server-dev-11:
-    installed: true
+{{ end }}
 command:
-  pg_ctlcluster 9.3 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.3 main stop --force:
+{{ range .Vars.pg_versions }}
+  pg_lsclusters -h {{.}}:
     exit-status: 0
     stdout:
-    - /^903/
-    stderr: []
-    timeout: 0
-  pg_ctlcluster 9.4 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.4 main stop --force:
-    exit-status: 0
-    stdout:
-    - /^904/
-    stderr: []
-    timeout: 0
-  pg_ctlcluster 9.5 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.5 main stop --force:
-    exit-status: 0
-    stdout:
-    - /^905/
-    stderr: []
-    timeout: 0
-  pg_ctlcluster 9.6 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 9.6 main stop --force:
-    exit-status: 0
-    stdout:
-    - /^906/
-    stderr: []
-    timeout: 0
-  pg_ctlcluster 10 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 10 main stop --force:
-    exit-status: 0
-    stdout:
-    - /^10/
-    stderr: []
-    timeout: 0
-  pg_ctlcluster 11 main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster 11 main stop --force:
-    exit-status: 0
-    stdout:
-    - /^11/
-    stderr: []
-    timeout: 0
-  pg_lsclusters -h:
-    exit-status: 0
-    stdout:
-    - 9.2 main 5432 down postgres /var/lib/postgresql/9.2/main /var/log/postgresql/postgresql-9.2-main.log
-    - 9.3 main 5432 down postgres /var/lib/postgresql/9.3/main /var/log/postgresql/postgresql-9.3-main.log
-    - 9.4 main 5432 down postgres /var/lib/postgresql/9.4/main /var/log/postgresql/postgresql-9.4-main.log
-    - 9.5 main 5432 down postgres /var/lib/postgresql/9.5/main /var/log/postgresql/postgresql-9.5-main.log
-    - 9.6 main 5432 down postgres /var/lib/postgresql/9.6/main /var/log/postgresql/postgresql-9.6-main.log
-    - 10  main 5432 down postgres /var/lib/postgresql/10/main  /var/log/postgresql/postgresql-10-main.log
-    - 11  main 5432 down postgres /var/lib/postgresql/11/main  /var/log/postgresql/postgresql-11-main.log
+    - {{.}} main 5432 down postgres /var/lib/postgresql/{{.}}/main /var/log/postgresql/postgresql-{{.}}-main.log
     stderr: []
     timeout: 10000
+  pg_ctlcluster {{.}} main start && psql -Atc "show server_version_num" template1 && pg_ctlcluster {{.}} main stop --force:
+    exit-status: 0
+    stdout:
+    - /^{{.}}/
+    stderr: []
+    timeout: 0
+{{ end }}

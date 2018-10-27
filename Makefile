@@ -1,5 +1,7 @@
 VERSIONS = jessie stretch trusty xenial bionic
 
+TEST_TIMEOUT_SECONDS = 120
+
 default: build
 
 dockerfiles: $(addprefix dockerfile-,$(VERSIONS))
@@ -13,7 +15,9 @@ build-%:
 	docker build -t dpirotte/postgres-dev:$* $*
 
 test-%: test_deps
-	env GOSS_OPTS="--max-concurrent 1 --color" dgoss run dpirotte/postgres-dev:$* sleep 120
+	@env GOSS_VARS="goss_vars.yaml" \
+		GOSS_OPTS="--max-concurrent 1 --color" \
+		dgoss run dpirotte/postgres-dev:$* sleep ${TEST_TIMEOUT_SECONDS}
 
 .PHONY: test_deps
 test_deps: ${HOME}/bin/goss ${HOME}/bin/dgoss
