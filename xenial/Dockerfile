@@ -21,7 +21,6 @@ RUN echo \
 
 # Postgresql development dependencies and runtime dependencies for installcheck
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-  postgresql-9.2 \
   postgresql-9.3 \
   postgresql-9.4 \
   postgresql-9.5 \
@@ -39,7 +38,7 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 ENV LC_ALL en_US.UTF-8
 
 # It is more convenient to run installcheck if `root` has a user on the database
-RUN for version in 9.2 9.3 9.4 9.5 9.6 10 11; do \
+RUN for version in 9.3 9.4 9.5 9.6 10 11; do \
   pg_createcluster $version main && \
   sed -ri "s/port = [0-9]+/port = 5432/" /etc/postgresql/$version/main/postgresql.conf && \
   pg_ctlcluster $version main start && \
