@@ -22,3 +22,21 @@ Tags correspond to the OS version.
 |Ubuntu|Trusty Tahr (14.04)|`trusty`|
 |Ubuntu|Xenial Xerus (16.04)|`xenial`|
 |Ubuntu|Bionic Beaver (18.04)|`bionic`|
+
+Servers and development headers for Postgres 9.3, 9.4, 9.5, 9.6, 10, and 11 are included.
+
+# Usage
+
+This image was designed to make it easier to build and test Postgres extensions against multiple versions of Postgres.
+
+For example, in your `Makefile`, you can use an environment variable (e.g. `PG_VERSION`) to find the right version of `pg_config`. Then, you can run something like the following to test your extension:
+
+```
+docker run \
+  --rm -it \
+  -e PG_VERSION=11 \
+  -v ${PWD}:/build \
+  -w /build \
+  dpirotte/postgres-dev:stretch \
+  bash -c "pg_ctlcluster 11 main start ; make clean install installcheck"
+```
