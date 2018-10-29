@@ -2,6 +2,9 @@ VERSIONS = jessie stretch trusty xenial bionic
 
 TEST_TIMEOUT_SECONDS = 120
 
+GOSS_PATH = .tmp/goss
+DGOSS_PATH = .tmp/dgoss
+
 default: build
 
 dockerfiles: $(addprefix dockerfile-,$(VERSIONS))
@@ -17,17 +20,19 @@ build-%:
 test-%: test_deps
 	@env GOSS_VARS="goss_vars.yaml" \
 		GOSS_OPTS="--max-concurrent 1 --color" \
-		dgoss run dpirotte/postgres-dev:$* sleep ${TEST_TIMEOUT_SECONDS}
+		${DGOSS_PATH} run dpirotte/postgres-dev:$* sleep ${TEST_TIMEOUT_SECONDS}
 test: $(addprefix test-,$(VERSIONS))
 
 .PHONY: test_deps
-test_deps: ${HOME}/bin/goss ${HOME}/bin/dgoss
+test_deps: ${GOSS_PATH} ${DGOSS_PATH}
 
-${HOME}/bin/goss:
-	@curl -L https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ${HOME}/bin/goss
-	@chmod +rx ${HOME}/bin/goss
+${GOSS_PATH}:
+	@mkdir -p .tmp
+	@curl -fsSL https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-linux-amd64 -o ${GOSS_PATH}
+	@chmod +rx ${GOSS_PATH}
 
-${HOME}/bin/dgoss:
-	@curl -L https://raw.githubusercontent.com/aelsabbahy/goss/v0.3.6/extras/dgoss/dgoss -o ${HOME}/bin/dgoss
-	@chmod +rx ${HOME}/bin/dgoss
+${DGOSS_PATH}:
+	@mkdir -p .tmp
+	@curl -fsSL https://raw.githubusercontent.com/aelsabbahy/goss/v0.3.6/extras/dgoss/dgoss -o ${DGOSS_PATH}
+	@chmod +rx ${DGOSS_PATH}
 
