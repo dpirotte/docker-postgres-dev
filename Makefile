@@ -18,7 +18,9 @@ build-%:
 	docker build -t dpirotte/postgres-dev:$* $*
 
 test-%: test_deps
-	@env GOSS_VARS="goss_vars.yaml" \
+	@env \
+		GOSS_PATH=${GOSS_PATH} \
+		GOSS_VARS="goss_vars.yaml" \
 		GOSS_OPTS="--max-concurrent 1 --color" \
 		${DGOSS_PATH} run dpirotte/postgres-dev:$* sleep ${TEST_TIMEOUT_SECONDS}
 test: $(addprefix test-,$(VERSIONS))
