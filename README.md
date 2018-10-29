@@ -4,6 +4,7 @@
 [![pulls](https://img.shields.io/docker/pulls/dpirotte/postgres-dev.svg)](https://hub.docker.com/r/dpirotte/postgres-dev/)
 [![pulls](https://img.shields.io/docker/automated/dpirotte/postgres-dev.svg)](https://hub.docker.com/r/dpirotte/postgres-dev/builds/)
 [![pulls](https://img.shields.io/docker/build/dpirotte/postgres-dev.svg)](https://hub.docker.com/r/dpirotte/postgres-dev/builds/)
+[![Build Status](https://travis-ci.org/dpirotte/docker-postgres-dev.svg?branch=master)](https://travis-ci.org/dpirotte/docker-postgres-dev)
 
 Docker image useful for building Debian packages for Postgres extensions.
 
