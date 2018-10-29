@@ -9,8 +9,15 @@ addons:
 services:
   - docker
 
+env:
+  - DISTRO=jessie
+  - DISTRO=stretch
+  - DISTRO=trusty
+  - DISTRO=xenial
+  - DISTRO=bionic
+
 script:
-  - make build-stretch
-  - make test-stretch
+  - make build-$DISTRO
+  - make test-$DISTRO
 
 
