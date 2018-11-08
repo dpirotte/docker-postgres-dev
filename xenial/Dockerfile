@@ -27,6 +27,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteract
   postgresql-9.6 \
   postgresql-10 \
   postgresql-11 \
+  postgresql-9.3-pgtap \
+  postgresql-9.4-pgtap \
+  postgresql-9.5-pgtap \
+  postgresql-9.6-pgtap \
+  postgresql-10-pgtap \
+  postgresql-11-pgtap \
   postgresql-server-dev-all \
 && rm -rf /var/lib/apt/lists/*
 

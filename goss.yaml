@@ -19,6 +19,8 @@ package:
     installed: true
   postgresql-server-dev-{{.}}:
     installed: true
+  postgresql-{{.}}-pgtap:
+    installed: true
 {{ end }}
 command:
 {{ range .Vars.pg_versions }}
