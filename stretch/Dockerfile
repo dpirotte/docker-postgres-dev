@@ -60,3 +60,12 @@ RUN for version in 9.4 9.5 9.6 10 11; do \
   "max_replication_slots = 5\n" \
   >> /etc/postgresql/$version/main/postgresql.conf \
 ; done
+
+# Allow local replication connections in versions that don't enable by default
+RUN for version in 9.4 9.5 9.6; do \
+  echo \
+  "local replication all peer\n" \
+  "host replication all 127.0.0.1/32 md5\n" \
+  "host replication all ::1/128 md5\n" \
+  >> /etc/postgresql/$version/main/pg_hba.conf \
+; done
