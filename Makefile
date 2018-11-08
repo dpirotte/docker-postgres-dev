@@ -7,14 +7,14 @@ DGOSS_PATH = .tmp/dgoss
 
 default: build
 
-dockerfiles: $(addprefix dockerfile-,$(VERSIONS))
+dockerfiles: $(addsuffix /Dockerfile,$(VERSIONS))
 
-dockerfile-%:
-	mkdir -p $* && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
+%/Dockerfile: Dockerfile.template
+	@mkdir -p $* && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
 
 build: $(addprefix build-,$(VERSIONS))
 
-build-%:
+build-%: %/Dockerfile
 	docker build -t dpirotte/postgres-dev:$* $*
 
 test-%: test_deps
