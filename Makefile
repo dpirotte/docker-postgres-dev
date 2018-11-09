@@ -1,4 +1,4 @@
-VERSIONS = jessie stretch trusty xenial bionic
+VERSIONS = jessie stretch buster trusty xenial bionic
 
 TEST_TIMEOUT_SECONDS = 120
 
@@ -11,6 +11,7 @@ dockerfiles: $(addsuffix /Dockerfile,$(VERSIONS))
 
 %/Dockerfile: Dockerfile.template
 	@mkdir -p $* && sed "s/%%VERSION%%/$*/" Dockerfile.template > $*/Dockerfile
+	@test -e $*/patch.sh && bash $*/patch.sh
 
 build: $(addprefix build-,$(VERSIONS))
 
